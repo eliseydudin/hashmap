@@ -1,6 +1,6 @@
 #ifndef HASHMAP_H_
 #define HASHMAP_H_
-
+#include <stdbool.h>
 #define HASH_SLOTS 512
 
 struct hash_map {
@@ -19,6 +19,7 @@ void hmap_make(struct hash_map *h);
 void hmap_free(struct hash_map *h);
 void hmap_add_key(struct hash_map *h, const char *key, void *data);
 void *hmap_get(struct hash_map *h, const char *key);
+bool hmap_has_key(struct hash_map *h, const char *key);
 
 void hnode_free(struct hash_node *hn);
 struct hash_node *hnode_make(const char *key, void *data);

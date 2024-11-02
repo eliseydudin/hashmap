@@ -25,8 +25,7 @@ unsigned int hash(const char* key)
 
     for (i = 0; i < HASH_SLOTS; i++)
         h = (h ^ p[i]) * 0x01000193;
-
-    return h;
+    return h % HASH_SLOTS;
 }
 struct hash_node* hnode_make(const char* key, void* data)
 {
@@ -59,6 +58,29 @@ void hmap_add_key(struct hash_map* h, const char* key, void* data)
     } else {
         h->node_slots[hashed] = hnode_make(key, data);
     }
+}
+
+bool hmap_has_key(struct hash_map* h, const char* key)
+{
+    for (int i = 0; i <= HASH_SLOTS; i++) {
+        if (!h->node_slots[i]) {
+            continue;
+        }
+        if (h->node_slots[i]->next == NULL) {
+            if (strcmp(h->node_slots[i]->key, key) == 0) {
+                return true;
+            }
+        } else {
+            struct hash_node* node = h->node_slots[i];
+            while (node) {
+                if (strcmp(node->key, key) == 0) {
+                    return true;
+                }
+                node = node->next;
+            }
+        }
+    }
+    return false;
 }
 
 void* hmap_get(struct hash_map* h, const char* key)
