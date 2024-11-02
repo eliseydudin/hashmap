@@ -5,12 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 #define HASH_SLOTS 512
-void hmap_make(struct hash_map* h)
+int hmap_make(struct hash_map* h)
 {
     h->node_slots = (struct hash_node**)calloc(HASH_SLOTS, sizeof(struct hash_node*));
     if (!h->node_slots) {
-        printf("[ERROR] could not allocate memory for hashmap slots");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 }
 /*
@@ -19,11 +18,12 @@ void hmap_make(struct hash_map* h)
  */
 unsigned int hash(const char* key)
 {
-    unsigned char* p = key;
-    unsigned       h = 0x811c9dc5;
+    unsigned int   keylen = strlen(key);
+    unsigned char* p      = key;
+    unsigned       h      = 0x811c9dc5;
     int            i;
 
-    for (i = 0; i < HASH_SLOTS; i++)
+    for (i = 0; i < keylen; i++)
         h = (h ^ p[i]) * 0x01000193;
     return h % HASH_SLOTS;
 }
@@ -62,23 +62,17 @@ void hmap_add_key(struct hash_map* h, const char* key, void* data)
 
 bool hmap_has_key(struct hash_map* h, const char* key)
 {
-    for (int i = 0; i <= HASH_SLOTS; i++) {
-        if (!h->node_slots[i]) {
-            continue;
+    if (!h || !key) {
+        return false;
+    }
+    int hashed = hash(key);
+
+    struct hash_node* node = h->node_slots[hashed];
+    while (node) {
+        if (strcmp(node->key, key) == 0) {
+            return true;
         }
-        if (h->node_slots[i]->next == NULL) {
-            if (strcmp(h->node_slots[i]->key, key) == 0) {
-                return true;
-            }
-        } else {
-            struct hash_node* node = h->node_slots[i];
-            while (node) {
-                if (strcmp(node->key, key) == 0) {
-                    return true;
-                }
-                node = node->next;
-            }
-        }
+        node = node->next;
     }
     return false;
 }
@@ -102,37 +96,16 @@ void* hmap_get(struct hash_map* h, const char* key)
     return NULL;
 }
 
-struct hash_node* hnode_detect_cycle(struct hash_node* hn)
-{
-    struct hash_node* one_step_pointer = hn;
-    struct hash_node* two_step_pointer = hn;
-    while (true) {
-        one_step_pointer = one_step_pointer->next;
-        if (!two_step_pointer->next)
-            return NULL;
-        two_step_pointer = two_step_pointer->next->next;
-        if (!one_step_pointer || !two_step_pointer)
-            return NULL;
-
-        if (one_step_pointer == two_step_pointer)
-            return one_step_pointer;
-    }
-}
-
 void hnode_free(struct hash_node* hn)
 {
     struct hash_node* current = hn;
     struct hash_node* prev    = NULL;
 
-    struct hash_node* cycle_location = hnode_detect_cycle(hn);
     while (current) {
         prev    = current;
         current = current->next;
-        if (prev == cycle_location)
-            prev->next = NULL;
-        else {
-            free(prev);
-        }
+
+        free(prev);
     }
 }
 
