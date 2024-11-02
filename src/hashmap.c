@@ -17,7 +17,7 @@ void hmap_make(struct hash_map* h)
  *  FNV Hash Algorithm
  *  [http://www.isthe.com/chongo/tech/comp/fnv/]
  */
-unsigned int hash /*naive*/ (const char* key)
+unsigned int hash(const char* key)
 {
     unsigned char* p = key;
     unsigned       h = 0x811c9dc5;
