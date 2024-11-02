@@ -64,22 +64,20 @@ void hmap_add_key(struct hash_map* h, const char* key, void* data)
 void* hmap_get(struct hash_map* h, const char* key)
 {
     int hashed = hash(key);
-    if (h->node_slots[hashed][0].next != NULL) {
-        struct hash_node* head = h->node_slots[hashed];
-        if (strcmp(head->key, key) == 0) {
-            return head->data;
-        } else {
-            while (head->next) {
-                head = head->next;
-                if (strcmp(head->key, key) == 0) {
-                    return head->data;
-                }
-            }
-            return NULL;
-        }
-    } else {
+    if (h->node_slots[hashed][0].next == NULL)
         return h->node_slots[hashed]->data;
+
+    struct hash_node* head = h->node_slots[hashed];
+    if (strcmp(head->key, key) == 0)
+        return head->data;
+
+    while (head->next) {
+        head = head->next;
+        if (strcmp(head->key, key) == 0)
+            return head->data;
     }
+
+    return NULL;
 }
 
 struct hash_node* hnode_detect_cycle(struct hash_node* hn)
