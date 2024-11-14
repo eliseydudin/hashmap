@@ -3,3 +3,6 @@
 tests
 # Meson output
 build/
+# Clang cache
+.cache/
+# macOS directory data
