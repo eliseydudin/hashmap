@@ -6,3 +6,4 @@ build/
 # Clang cache
 .cache/
 # macOS directory data
+.DS_Store
