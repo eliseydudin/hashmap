@@ -1,3 +1,5 @@
-./src/hashmap.o
-./src/tests.o
-./src/tests
+# Compiler output
+*.o
+tests
+# Meson output
+build/
