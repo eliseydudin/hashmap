@@ -9,8 +9,9 @@ int hmap_make(struct hash_map* h)
 {
     h->node_slots = (struct hash_node**)calloc(HASH_SLOTS, sizeof(struct hash_node*));
     if (!h->node_slots) {
-        return NULL;
+        return -1;
     }
+    return 0;
 }
 /*
  *  FNV Hash Algorithm
