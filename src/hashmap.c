@@ -19,7 +19,7 @@ int hmap_make(struct hash_map* h)
 unsigned int hash(const char* key)
 {
     unsigned int   keylen = strlen(key);
-    unsigned char* p      = key;
+    unsigned char* p      = (unsigned char *)key;
     unsigned       h      = 0x811c9dc5;
     int            i;
 
