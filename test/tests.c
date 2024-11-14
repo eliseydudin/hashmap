@@ -1,4 +1,4 @@
-#include "hashmap.h"
+#include "../src/hashmap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
