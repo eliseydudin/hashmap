@@ -1,1 +1,1 @@
-option('enable-tests', type : 'boolean', value : true)
+option('enable-tests', type: 'boolean', value: true)
