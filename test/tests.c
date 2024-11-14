@@ -1,7 +1,8 @@
-#include "../src/hashmap.h"
+#include <hashmap.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 int main(int argc, char* argv[])
 {
     struct hash_map my_hash = { 0 };
